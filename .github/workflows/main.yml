@@ -1,1 +1,37 @@
 
+name: Workflow for Codecov Action
+on: [push, pull_request]
+  push:
+    branches: - main
+
+
+jobs:
+  run:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os:  windows-latest
+   steps:
+    - uses: actions/checkout@main
+    - name: Setup Python
+      uses: actions/setup-python@main
+      with:
+        python-version: 3.10
+    - name: Generate coverage report
+      run: |
+        pip install pytest
+        pip install pytest-cov
+        pytest --cov=./ --cov-report=xml
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        directory: ./coverage/reports/
+        env_vars: OS,PYTHON
+        fail_ci_if_error: true
+        files: ./coverage1.xml,./coverage2.xml,!./cache
+        flags: unittests
+        name: codecov-umbrella
+        token: 202ca4aa-9b4a-4143-8301-59abad6e4096
+        verbose: true
+  
+   
