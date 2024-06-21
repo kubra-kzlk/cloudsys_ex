@@ -31,7 +31,7 @@ jobs:
         files: ./coverage1.xml,./coverage2.xml,!./cache
         flags: unittests
         name: codecov-umbrella
-        token: 202ca4aa-9b4a-4143-8301-59abad6e4096
+        token: ${{ secrets.CODECOV_TOKEN }}
         verbose: true
   
    
