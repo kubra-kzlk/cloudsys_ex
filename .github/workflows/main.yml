@@ -10,15 +10,11 @@ jobs:
       matrix:
         os:  [ubuntu-latest, macos-latest, windows-latest]
     steps:       
-      - uses: actions/checkout@main
-      - uses: codecov/codecov-action@v4
-        with:
-          fail_ci_if_error: true # optional (default = false)
-          files: ./coverage1.xml,./coverage2.xml # optional
-          flags: unittests # optional
-          name: codecov-umbrella # optional
-          token: ${{ secrets.CODECOV_TOKEN }} # required
-          verbose: true # optional (default = false)
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run the tests and generate coverage report
+        run: npm test -- --coverage    
         
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
@@ -33,3 +29,13 @@ jobs:
           verbose: true
   
    
+      - name: Build
+        run: npm run build
+
+      - name: Deploy
+        run: |
+            git remote set-url origin https://${github_token}@github.com/${repository}
+            npm run deploy
+        env:
+          github_token: ${{ secrets.CODECOV_TOKEN }}
+          repository: ${{ github.repository }}
